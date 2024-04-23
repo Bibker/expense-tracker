@@ -3,6 +3,8 @@ require("dotenv").config();
 const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoute = require("./routes/userRoute");
+const incomeRoute = require("./routes/incomeRoute");
+const expenseRoute = require("./routes/expenseRoute");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
@@ -23,6 +25,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", userRoute);
+app.use("/income", incomeRoute);
+app.use("/expense", expenseRoute);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(notFound);
