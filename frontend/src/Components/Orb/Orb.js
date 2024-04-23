@@ -8,16 +8,17 @@ function Orb() {
   console.log(width, height);
 
   const moveOrb = keyframes`
-      0%{
-        transform: translate(0,0);
-      }
-      50%{
-        transform: translate(${width / 1.2}px,${height / 2}px);
-      }
-      100%{
-        transform: translate(0,0);
-      }
+        0%{
+            transform: translate(0, 0);
+        }
+        50%{
+            transform: translate(${width}px, ${height / 2}px);
+        }
+        100%{
+            transform: translate(0, 0);
+        }
     `;
+
   const OrbStyled = styled.div`
     width: 70vh;
     height: 70vh;
