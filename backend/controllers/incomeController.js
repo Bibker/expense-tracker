@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 
 const addIncome = asyncHandler(async (req, res) => {
   const { title, amount, category, description, date } = req.body;
+  const userId = req.user.id;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -17,6 +18,7 @@ const addIncome = asyncHandler(async (req, res) => {
     amount,
     category,
     description,
+    addedBy: userId,
     date,
   });
 
@@ -33,7 +35,10 @@ const addIncome = asyncHandler(async (req, res) => {
 });
 
 const getIncome = asyncHandler(async (req, res) => {
-  const incomeRecords = await Income.find().sort({ createdAt: -1 });
+  const userId = req.user.id;
+  const incomeRecords = await Income.find({ addedBy: userId }).sort({
+    createdAt: -1,
+  });
   if (incomeRecords) {
     return res.status(200).json({
       success: true,
@@ -48,8 +53,9 @@ const getIncome = asyncHandler(async (req, res) => {
 
 const getIncomeById = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
-  const incomeRecord = await Income.findById(id);
+  const incomeRecord = await Income.findOne({ _id: id, addedBy: userId });
   if (incomeRecord) {
     return res.status(200).json({
       success: true,
@@ -64,10 +70,15 @@ const getIncomeById = asyncHandler(async (req, res) => {
 
 const updateIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
-  const updateIncomeRecord = await Income.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+  const updateIncomeRecord = await Income.findOneAndUpdate(
+    { _id: id, addedBy: userId },
+    req.body,
+    {
+      new: true,
+    }
+  );
   if (updateIncomeRecord) {
     return res.status(200).json({
       success: true,
@@ -82,7 +93,12 @@ const updateIncome = asyncHandler(async (req, res) => {
 
 const deleteIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const deletedIncome = await Income.findByIdAndDelete(id);
+  const userId = req.user.id;
+
+  const deletedIncome = await Income.findOneAndDelete({
+    _id: id,
+    addedBy: userId,
+  });
   if (deletedIncome) {
     return res.status(200).json({
       success: true,
