@@ -21,6 +21,7 @@ import {
   yt,
 } from "../../utils/icons";
 import Button from "../Button/Button";
+import { dateFormat } from "../../utils/dateFormat";
 
 function Incomeitem({
   id,
@@ -86,9 +87,11 @@ function Incomeitem({
         <h5>{title}</h5>
         <div className='inner-content'>
           <div className='text'>
-            <p>{dollar} 45</p>
             <p>
-              {calender} {date}
+              {dollar} {amount}
+            </p>
+            <p>
+              {calender} {dateFormat(date)}
             </p>
             <p>
               {comment}
