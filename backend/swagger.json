@@ -142,14 +142,12 @@
             "description": "Bad Request"
           }
         }
-      }
-    },
-    "/{income}/id": {
+      },
       "delete": {
         "description": "",
         "parameters": [
           {
-            "name": "income",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -253,14 +251,12 @@
             "description": "Bad Request"
           }
         }
-      }
-    },
-    "/{expense}/id": {
+      },
       "delete": {
         "description": "",
         "parameters": [
           {
-            "name": "expense",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
