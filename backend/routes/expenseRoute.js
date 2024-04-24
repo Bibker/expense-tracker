@@ -6,14 +6,15 @@ const {
   updateExpense,
   deleteExpense,
 } = require("../controllers/expenseController");
+const { isAuthenticated } = require("../middlewares/authMiddleware");
 
 const router = require("express").Router();
 
 router
-  .post("/", incomeValidator, addExpense)
-  .get("/", getExpense)
-  .get("/:id", getExpenseById)
-  .patch("/:id", updateExpense)
-  .delete("/:id", deleteExpense);
+  .post("/", isAuthenticated, incomeValidator, addExpense)
+  .get("/", isAuthenticated, getExpense)
+  .get("/:id", isAuthenticated, getExpenseById)
+  .patch("/:id", isAuthenticated, updateExpense)
+  .delete("/:id", isAuthenticated, deleteExpense);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 
 const addExpense = asyncHandler(async (req, res) => {
   const { title, amount, category, description, date } = req.body;
+  const userId = req.user.id;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -17,6 +18,7 @@ const addExpense = asyncHandler(async (req, res) => {
     amount,
     category,
     description,
+    addedBy: userId,
     date,
   });
 
@@ -33,7 +35,10 @@ const addExpense = asyncHandler(async (req, res) => {
 });
 
 const getExpense = asyncHandler(async (req, res) => {
-  const expenseRecords = await Expense.find().sort({ createdAt: -1 });
+  const userId = req.user.id;
+  const expenseRecords = await Expense.find({ addedBy: userId }).sort({
+    createdAt: -1,
+  });
   if (expenseRecords) {
     return res.status(200).json({
       success: true,
@@ -48,8 +53,9 @@ const getExpense = asyncHandler(async (req, res) => {
 
 const getExpenseById = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
-  const expenseRecord = await Expense.findById(id);
+  const expenseRecord = await Expense.findOne({ _id: id, addedBy: userId });
   if (expenseRecord) {
     return res.status(200).json({
       success: true,
@@ -64,10 +70,15 @@ const getExpenseById = asyncHandler(async (req, res) => {
 
 const updateExpense = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
-  const updateExpenseRecord = await Expense.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+  const updateExpenseRecord = await Expense.findOneAndUpdate(
+    { _id: id, addedBy: userId },
+    req.body,
+    {
+      new: true,
+    }
+  );
   if (updateExpenseRecord) {
     return res.status(200).json({
       success: true,
@@ -82,7 +93,12 @@ const updateExpense = asyncHandler(async (req, res) => {
 
 const deleteExpense = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const deletedExpense = await Expense.findByIdAndDelete(id);
+  const userId = req.user.id;
+
+  const deletedExpense = await Expense.findOneAndDelete({
+    _id: id,
+    addedBy: userId,
+  });
   if (deletedExpense) {
     return res.status(200).json({
       success: true,

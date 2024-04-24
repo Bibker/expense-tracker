@@ -7,6 +7,14 @@ const registerValidator = [
   }),
   check("password", "Password is required").not().isEmpty(),
 ];
+
+const loginValidator = [
+  check("email", "Please enter a valid email").isEmail().normalizeEmail({
+    gmail_remove_dots: true,
+  }),
+  check("password", "Password is required").not().isEmpty(),
+];
+
 const incomeValidator = [
   check("title", "Please enter income title").not().isEmpty(),
   check("amount", "Please enter income amount").not().isEmpty(),
@@ -15,4 +23,4 @@ const incomeValidator = [
   check("date", "Please choose income date").not().isEmpty(),
 ];
 
-module.exports = { registerValidator, incomeValidator };
+module.exports = { registerValidator, incomeValidator, loginValidator };

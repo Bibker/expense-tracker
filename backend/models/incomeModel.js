@@ -33,6 +33,10 @@ const incomeSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    addedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
