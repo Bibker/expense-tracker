@@ -14,6 +14,6 @@ router
   .get("/", getExpense)
   .get("/:id", getExpenseById)
   .patch("/:id", updateExpense)
-  .delete(":/id", deleteExpense);
+  .delete("/:id", deleteExpense);
 
 module.exports = router;

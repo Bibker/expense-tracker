@@ -14,6 +14,6 @@ router
   .get("/", getIncome)
   .get("/:id", getIncomeById)
   .patch("/:id", updateIncome)
-  .delete(":/id", deleteIncome);
+  .delete("/:id", deleteIncome);
 
 module.exports = router;
