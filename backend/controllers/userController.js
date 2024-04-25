@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 const { validationResult } = require("express-validator");
+const { sendMail } = require("../util/mailer");
+const EMAIL_SENDER = process.env.EMAIL_SENDER;
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -58,4 +60,27 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, loginUser };
+const resetPassword = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: errors.array(),
+    });
+  }
+  const { email } = req.body;
+
+  const mailOptions = {
+    from: `Expense Tracker <${EMAIL_SENDER}>`,
+    to: email,
+    subject: "Password Reset Link",
+    text: "Your Password reset link is ...",
+    html: "<h1>Your Password reset link is ...<h1>",
+  };
+
+  const result = await sendMail(mailOptions);
+
+  res.send(result);
+});
+
+module.exports = { registerUser, loginUser, resetPassword };

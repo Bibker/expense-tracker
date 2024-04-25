@@ -1,4 +1,4 @@
-const { incomeValidator } = require("../config/validator");
+const { incomeValidator } = require("../util/validator");
 const {
   addIncome,
   getIncome,
