@@ -1,12 +1,12 @@
 const {
   registerValidator,
   loginValidator,
-  resetValidator,
+  forgotValidator,
 } = require("../util/validator");
 const {
   registerUser,
   loginUser,
-  resetPassword,
+  forgotPassword,
 } = require("../controllers/userController");
 
 const router = require("express").Router();
@@ -14,6 +14,6 @@ const router = require("express").Router();
 router
   .post("/register", registerValidator, registerUser)
   .post("/login", loginValidator, loginUser)
-  .post("/reset-password", resetValidator, resetPassword);
+  .post("/forgot-password", forgotValidator, forgotPassword);
 
 module.exports = router;
