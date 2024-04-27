@@ -5,12 +5,18 @@ import { useGlobalContext } from "../../Context/globalContext";
 import Form from "../Form/Form";
 import Incomeitem from "../IncomeItem/incomeitem";
 import ExpenseForm from "./ExpenseForm";
+import { useNavigate } from "react-router-dom";
 
 function Expenses() {
-  const { addIncome, expenses, getExpenses, deleteExpense, totalExpenses } =
+  const navigate = useNavigate();
+
+  const { token, expenses, getExpenses, deleteExpense, totalExpenses } =
     useGlobalContext();
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
     getExpenses();
   }, []);
 
@@ -19,7 +25,7 @@ function Expenses() {
       <InnerLayout>
         <h1>Expenses</h1>
         <h2 className='total-income'>
-          Total Expense: <span>${totalExpenses()}</span>
+          Total Expense: <span>Rs {totalExpenses()}</span>
         </h2>
         <div className='income-content'>
           <div className='form-container'>

@@ -87,9 +87,7 @@ function Incomeitem({
         <h5>{title}</h5>
         <div className='inner-content'>
           <div className='text'>
-            <p>
-              {dollar} {amount}
-            </p>
+            <p>Rs {amount}</p>
             <p>
               {calender} {dateFormat(date)}
             </p>

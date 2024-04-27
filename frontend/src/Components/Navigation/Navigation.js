@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import avatar from "../../img/avatar.png";
 import { menuItems } from "../../utils/menuitems";
 import { signout } from "../../utils/icons";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../../Context/globalContext";
 
 function Navigation({ active, setActive }) {
+  const { removeAccount } = useGlobalContext();
+
+  const navigate = useNavigate();
+
+  const handleItemClick = (path, itemId) => {
+    // Navigate to the specified path
+    navigate(path);
+
+    // Update the active state
+    setActive(itemId);
+  };
+
   return (
     <NavStyled>
       <div className='user-con'>
@@ -23,7 +37,7 @@ function Navigation({ active, setActive }) {
           return (
             <li
               key={item.id}
-              onClick={() => setActive(item.id)}
+              onClick={() => handleItemClick(item.link, item.id)}
               className={active === item.id ? "active" : ""}
             >
               {item.icon}
@@ -34,7 +48,7 @@ function Navigation({ active, setActive }) {
       </ul>
 
       <div className='bottom-nav'>
-        <li>{signout} Sign Out</li>
+        <li onClick={removeAccount}>{signout} Sign Out</li>
       </div>
     </NavStyled>
   );
@@ -114,6 +128,9 @@ const NavStyled = styled.nav`
       background: #222260;
       border-radius: 0 10px 10px 0;
     }
+  }
+  .bottom-nav {
+    cursor: pointer;
   }
 `;
 

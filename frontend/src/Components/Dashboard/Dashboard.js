@@ -4,9 +4,11 @@ import { InnerLayout } from "../../styles/Layouts";
 import Chart from "../Chart/Chart";
 import { dollar } from "../../utils/icons";
 import { useGlobalContext } from "../../Context/globalContext";
-import HIstory from "../History/HIstory";
+import History from "../History/HIstory";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const {
     incomes,
     expenses,
@@ -15,12 +17,16 @@ function Dashboard() {
     totalBalance,
     getIncomes,
     getExpenses,
+    token,
   } = useGlobalContext();
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
     getIncomes();
     getExpenses();
-  }, []);
+  }, [token]);
 
   return (
     <DashboardStyled>
@@ -32,27 +38,21 @@ function Dashboard() {
             <div className='amount-con'>
               <div className='income'>
                 <h2>Total Income</h2>
-                <p>
-                  {dollar} {totalIncome()}
-                </p>
+                <p>Rs {totalIncome()}</p>
               </div>
               <div className='expense'>
                 <h2>Total Expense</h2>
-                <p>
-                  {dollar} {totalExpenses()}
-                </p>
+                <p>Rs {totalExpenses()}</p>
               </div>
               <div className='balance'>
                 <h2>Total Balance</h2>
-                <p>
-                  {dollar} {totalBalance()}
-                </p>
+                <p>Rs {totalBalance()}</p>
               </div>
             </div>
           </div>
 
           <div className='history-con'>
-            <HIstory />
+            <History />
             <h2 className='salary-title'>
               Min <span>Salary</span> Max
             </h2>

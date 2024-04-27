@@ -4,21 +4,27 @@ import { InnerLayout } from "../../styles/Layouts";
 import { useGlobalContext } from "../../Context/globalContext";
 import Form from "../Form/Form";
 import Incomeitem from "../IncomeItem/incomeitem";
+import { useNavigate } from "react-router-dom";
 
 function Income() {
-  const { addIncome, incomes, getIncomes, deleteIncome, totalIncome } =
+  const navigate = useNavigate();
+
+  const { token, incomes, getIncomes, deleteIncome, totalIncome } =
     useGlobalContext();
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
     getIncomes();
-  }, []);
+  }, [token]);
 
   return (
     <IncomeStyled>
       <InnerLayout>
         <h1>Incomes</h1>
         <h2 className='total-income'>
-          Total Income: <span>${totalIncome()}</span>
+          Total Income: <span>Rs {totalIncome()}</span>
         </h2>
         <div className='income-content'>
           <div className='form-container'>
