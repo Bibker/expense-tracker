@@ -4,6 +4,7 @@ const generateToken = require("../config/generateToken");
 const { validationResult } = require("express-validator");
 const { sendMail } = require("../util/mailer");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const EMAIL_SENDER = process.env.EMAIL_SENDER;
 const FRONTEND_URL = process.env.FRONTEND_URL;
@@ -82,7 +83,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const registeredUser = await User.findOne({ email });
-  if (email !== registeredUser.email) {
+  if (!registeredUser) {
     return res.status(200).json({
       success: true,
       message:
@@ -97,10 +98,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
   };
 
   const passwordResetToken = jwt.sign(payload, oneTimeJwtSecret, {
-    expiresIn: "1m",
+    expiresIn: "5m",
   });
 
-  const passwordResetLink = `${FRONTEND_URL}/reset-password/${registeredUser._id}/${passwordResetToken}`;
+  const passwordResetLink = `${FRONTEND_URL}/reset-password?t=${passwordResetToken}`;
   const mailOptions = {
     from: `Expense Tracker <${EMAIL_SENDER}>`,
     to: email,
@@ -118,4 +119,76 @@ const forgotPassword = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { registerUser, loginUser, forgotPassword };
+const resetPassword = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: errors.array(),
+    });
+  }
+  const { password } = req.body;
+  const passwordResetToken = req.headers.authorization;
+  const verifiedUser = await verifyPasswordResetToken(passwordResetToken);
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  await User.findByIdAndUpdate(verifiedUser.id, {
+    password: hashedPassword,
+  });
+
+  const mailOptions = {
+    from: `Expense Tracker <${EMAIL_SENDER}>`,
+    to: verifiedUser.email,
+    subject: "Password Changed",
+    text: `Dear ${verifiedUser.name}, Your password has been updated.`,
+    html: `<!DOCTYPE html><html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office"> <head> <meta charset="UTF-8"/> <meta name="viewport" content="width=device-width,initial-scale=1"/> <meta name="x-apple-disable-message-reformatting"/> <title>Password Update</title> <style>table, td, div, h1, p{font-family: Arial, sans-serif;}.wrapper{display: flex; align-items: center; width: 100%; justify-content: space-between;}.header{background: #39B7E9; max-width: 540px; width: 100%; padding: 20px 30px; display: flex; color: white; align-items: center; justify-content: space-between; border-radius: 5px 5px 0 0;}.logo{height: auto; display: block; margin-bottom: 10px;}.main-content{padding: 42px 30px;}.main-content h1{font-size: 24px; margin: 0 0 20px 0; font-family: Arial, sans-serif;}.main-content p{margin: 0 0 20px 0; font-size: 16px; line-height: 24px; font-family: Arial, sans-serif;}.transaction-outline{margin-bottom: 20px;}.transaction-outline p{margin: 0;}.main-content a{color: #39B7E9; text-decoration: underline;}.action_container{display: flex; justify-content: center; padding: 20px 0;}.action_container a{background: #273B80; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none;}.footer{padding: 30px; background: #273B80; color: #fff;}.footer p{margin: 0; font-size: 14px; line-height: 16px; font-family: Arial, sans-serif; color: #ffffff;}.social-icons{padding: 0; border-collapse: collapse; border: 0; border-spacing: 0;}.social-icons td{padding: 0 0 0 10px; width: 38px;}.social-icons a{width: 20px; height: 20px; background: #39B7E9; padding: 10px; font-size: 20px;}</style> </head> <body style="margin: 0; padding: 0;"> <table role="presentation" style="width: 100%; border-collapse: collapse; border: 0; border-spacing: 0; background: #ffffff;"> <tr> <td align="center" style="padding-top: 40px;"> <table role="presentation" style="width: 602px; border-collapse: collapse; border-spacing: 0; text-align: left;"> <tr> <td align="center" class="header"> <div class="wrapper"> <div> <h1 style="font-size:25px; text-align:start;">Expense Tracker - Password Updated</h1> </div><div class=""></div></div></td></tr><tr> <td class="main-content"> <table role="presentation" style="width: 100%; border-collapse: collapse; border: 0; border-spacing: 0;"> <tr> <td style="padding: 0 0 36px 0; color: #153643;"> <h1 style="margin-bottom:20px;">Hello ${verifiedUser.name},</h1> <p>We want to let you know that your password has been updated successfully.</p><p><i>Note: If you are unaware of this action, Contact <b>Customer Support</b> ASAP!</i></p><p/> <div> <p style="margin-bottom:0">Best Regards,</p><p style="font-weight:bold; margin-bottom:5px">The Expense Tracker Team</p></div></td></tr></table> </td></tr></table> </td></tr></table> </body></html>`,
+  };
+
+  sendMail(mailOptions);
+
+  return res.status(200).json({
+    success: true,
+    message: "Password successfully changed",
+  });
+});
+
+const tokenVerifier = asyncHandler(async (req, res) => {
+  const passwordResetToken = req.headers.authorization;
+  const verifiedUser = await verifyPasswordResetToken(passwordResetToken);
+  verifiedUser.password = undefined;
+  res.status(200).json({
+    success: true,
+    message: "token is valid",
+    data: verifiedUser,
+  });
+});
+
+async function verifyPasswordResetToken(passwordResetToken) {
+  const decodedToken = jwt.decode(passwordResetToken);
+  if (!decodedToken) throw new Error("Invalid password reset link.");
+
+  const { id } = decodedToken;
+
+  const tokenUser = await User.findOne({ _id: id });
+  if (!tokenUser) {
+    return res.status(400).json({
+      success: false,
+      message: "User not registered",
+    });
+  }
+
+  const oneTimeJwtSecret = process.env.JWT_SECRET + tokenUser.password;
+  jwt.verify(passwordResetToken, oneTimeJwtSecret);
+
+  return tokenUser;
+}
+
+module.exports = {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  tokenVerifier,
+};

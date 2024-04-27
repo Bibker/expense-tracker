@@ -17,6 +17,19 @@ const loginValidator = [
   check("password", "Password is required").not().isEmpty(),
 ];
 
+const passwordValidator = [
+  check("password", "Password is required").not().isEmpty(),
+  check("confirmPassword", "Confirm password is required").not().isEmpty(),
+  check("confirmPassword", "Passwords do not match").custom(
+    (value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }
+  ),
+];
+
 const forgotValidator = [
   check("email", "Please enter a valid email").isEmail(),
   // .normalizeEmail({
@@ -35,6 +48,7 @@ const incomeValidator = [
 module.exports = {
   registerValidator,
   loginValidator,
+  passwordValidator,
   forgotValidator,
   incomeValidator,
 };
