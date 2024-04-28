@@ -173,10 +173,7 @@ async function verifyPasswordResetToken(passwordResetToken) {
 
   const tokenUser = await User.findOne({ _id: id });
   if (!tokenUser) {
-    return res.status(400).json({
-      success: false,
-      message: "User not registered",
-    });
+    throw new Error("User not registerd");
   }
 
   const oneTimeJwtSecret = process.env.JWT_SECRET + tokenUser.password;
