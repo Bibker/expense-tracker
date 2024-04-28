@@ -53,7 +53,7 @@ export const GlobalProvider = ({ children }) => {
         toast.success("Account Created Successfully!");
       })
       .catch((err) => {
-        toast.error(err.response.data.message.msg);
+        toast.error(err.response.data.message);
       });
   };
 

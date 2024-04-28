@@ -3,34 +3,31 @@ import { useGlobalContext } from "../../Context/globalContext";
 import "./forget-password.css";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { RotatingLines } from "react-loader-spinner";
 
 const ForgetPassword = () => {
-  const { BASE_URL, token } = useGlobalContext();
+  const { BASE_URL } = useGlobalContext();
   const [email, setEmail] = useState();
   const [isVisible, setIsVisible] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleSubmit = () => {
     setIsVisible(true);
 
-    setTimeout(() => {
-      setIsVisible(false);
+    axios
+      .post(`${BASE_URL}/auth/forgot-password`, {
+        email,
+      })
+      .then((res) => {
+        setIsVisible(false);
 
-      axios
-        .post(`${BASE_URL}/auth/forgot-password`, {
-          email,
-        })
-        .then((res) => {
-          toast.success(res.data.message);
-          // navigate("/reset-password");
-        })
-        .catch((err) => {
-          toast.error("Email is not registered");
-        });
-    }, 3000);
+        toast.success(res.data.message);
+        // navigate("/reset-password");
+      })
+      .catch((err) => {
+        setIsVisible(false);
+
+        toast.error("Email is not registered");
+      });
   };
 
   return (
