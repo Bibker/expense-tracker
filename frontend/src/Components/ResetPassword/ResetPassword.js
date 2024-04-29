@@ -15,10 +15,10 @@ function ResetPassword() {
   const [isValid, setIsValid] = useState(true);
   const [token, setToken] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     setToken(searchParams.get("t"));
-    console.log(token);
 
     axios
       .get(`${BASE_URL}/auth/verify-token`, {

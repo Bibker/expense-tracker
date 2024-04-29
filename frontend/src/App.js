@@ -13,11 +13,11 @@ import Login from "./Components/Login/login";
 import Signup from "./Components/Signup/signup";
 import ForgetPassword from "./Components/Forget-Password/ForgetPassword";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
+import Transaction from "./Components/Transaction/Transaction";
 
 function App() {
   const [active, setActive] = useState(1);
 
-  const global = useGlobalContext();
   const orbMemo = useMemo(() => {
     return <Orb />;
   }, []);
@@ -35,6 +35,7 @@ function App() {
               active={active}
               setActive={setActive}
             />
+
             <div className='main'>
               <Routes>
                 <Route
@@ -60,6 +61,10 @@ function App() {
                 <Route
                   path='/dashboard'
                   element={<Dashboard />}
+                />
+                <Route
+                  path='/transaction'
+                  element={<Transaction />}
                 />
                 <Route
                   path='/income'

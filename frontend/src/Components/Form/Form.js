@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalContext } from "../../Context/globalContext";
 import Button from "../Button/Button";
 import { plus } from "../../utils/icons";
+import { toast } from "react-toastify";
 
 function Form() {
   const { addIncome, getIncomes, error, setError } = useGlobalContext();
@@ -20,7 +21,6 @@ function Form() {
 
   const handleInput = (name) => (e) => {
     setInputState({ ...inputState, [name]: e.target.value });
-    setError("");
   };
 
   const handleSubmit = (e) => {
@@ -38,14 +38,12 @@ function Form() {
 
   return (
     <FormStyled onSubmit={handleSubmit}>
-      {error && <p className='error'>{error}</p>}
-
       <div className='input-control'>
         <input
           type='text'
           value={title}
           name={"title"}
-          placeholder='Salary Title'
+          placeholder='Income Title'
           onChange={handleInput("title")}
         />
       </div>
@@ -54,7 +52,7 @@ function Form() {
           type='text'
           value={amount}
           name={"amount"}
-          placeholder='Salary Amount'
+          placeholder='Income Amount'
           onChange={handleInput("amount")}
         />
       </div>
@@ -71,7 +69,6 @@ function Form() {
       </div>
       <div className='selects input-control'>
         <select
-          required
           value={category}
           name='category'
           id='category'

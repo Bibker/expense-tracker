@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../Context/globalContext";
 
 function Navigation({ active, setActive }) {
-  const { removeAccount } = useGlobalContext();
+  const { removeAccount, username, token } = useGlobalContext();
 
   const navigate = useNavigate();
 
@@ -20,37 +20,40 @@ function Navigation({ active, setActive }) {
   };
 
   return (
-    <NavStyled>
-      <div className='user-con'>
-        <img
-          src={avatar}
-          alt=''
-        />
-        <div className='text'>
-          <h2>Mike</h2>
-          <p>Your Money</p>
-        </div>
-      </div>
+    <>
+      {token && (
+        <NavStyled>
+          <div className='user-con'>
+            <img
+              src={avatar}
+              alt=''
+            />
+            <div className='text'>
+              <h2>{username}</h2>
+            </div>
+          </div>
 
-      <ul className='menu-items'>
-        {menuItems.map((item) => {
-          return (
-            <li
-              key={item.id}
-              onClick={() => handleItemClick(item.link, item.id)}
-              className={active === item.id ? "active" : ""}
-            >
-              {item.icon}
-              <span>{item.title}</span>
-            </li>
-          );
-        })}
-      </ul>
+          <ul className='menu-items'>
+            {menuItems.map((item) => {
+              return (
+                <li
+                  key={item.id}
+                  onClick={() => handleItemClick(item.link, item.id)}
+                  className={active === item.id ? "active" : ""}
+                >
+                  {item.icon}
+                  <span>{item.title}</span>
+                </li>
+              );
+            })}
+          </ul>
 
-      <div className='bottom-nav'>
-        <li onClick={removeAccount}>{signout} Sign Out</li>
-      </div>
-    </NavStyled>
+          <div className='bottom-nav'>
+            <li onClick={removeAccount}>{signout} Sign Out</li>
+          </div>
+        </NavStyled>
+      )}
+    </>
   );
 }
 
@@ -84,9 +87,6 @@ const NavStyled = styled.nav`
     }
     h2 {
       color: rgba(34, 34, 96, 1);
-    }
-    p {
-      color: rgba(34, 34, 96, 0.6);
     }
   }
 

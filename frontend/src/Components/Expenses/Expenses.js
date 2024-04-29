@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
 import { useGlobalContext } from "../../Context/globalContext";
@@ -8,6 +8,7 @@ import ExpenseForm from "./ExpenseForm";
 import { useNavigate } from "react-router-dom";
 
 function Expenses() {
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const { token, expenses, getExpenses, deleteExpense, totalExpenses } =
@@ -16,44 +17,57 @@ function Expenses() {
   useEffect(() => {
     if (!token) {
       navigate("/login");
+    } else {
+      setIsLoading(false);
+      getExpenses();
     }
-    getExpenses();
-  }, []);
+  }, [token]);
 
   return (
-    <ExpenseStyled>
-      <InnerLayout>
-        <h1>Expenses</h1>
-        <h2 className='total-income'>
-          Total Expense: <span>Rs {totalExpenses()}</span>
-        </h2>
-        <div className='income-content'>
-          <div className='form-container'>
-            <ExpenseForm />
-          </div>
-          <div className='incomes'>
-            {expenses.map((income) => {
-              const { _id, title, amount, date, category, description, type } =
-                income;
-              return (
-                <Incomeitem
-                  key={_id}
-                  id={_id}
-                  title={title}
-                  description={description}
-                  amount={amount}
-                  date={date}
-                  type={type}
-                  category={category}
-                  indicatorColor='var(--color-green)'
-                  deleteItem={deleteExpense}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </InnerLayout>
-    </ExpenseStyled>
+    <>
+      {!isLoading && (
+        <ExpenseStyled>
+          <InnerLayout>
+            <h1>Expenses</h1>
+            <h2 className='total-income'>
+              Total Expense: <span>Rs {totalExpenses()}</span>
+            </h2>
+            <div className='income-content'>
+              <div className='form-container'>
+                <ExpenseForm />
+              </div>
+              <div className='incomes'>
+                {expenses.map((income) => {
+                  const {
+                    _id,
+                    title,
+                    amount,
+                    date,
+                    category,
+                    description,
+                    type,
+                  } = income;
+                  return (
+                    <Incomeitem
+                      key={_id}
+                      id={_id}
+                      title={title}
+                      description={description}
+                      amount={amount}
+                      date={date}
+                      type={type}
+                      category={category}
+                      indicatorColor='var(--color-green)'
+                      deleteItem={deleteExpense}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </InnerLayout>
+        </ExpenseStyled>
+      )}
+    </>
   );
 }
 

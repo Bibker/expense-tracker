@@ -8,24 +8,22 @@ import { RotatingLines } from "react-loader-spinner";
 const ForgetPassword = () => {
   const { BASE_URL } = useGlobalContext();
   const [email, setEmail] = useState();
-  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = () => {
-    setIsVisible(true);
+    setIsLoading(true);
 
     axios
       .post(`${BASE_URL}/auth/forgot-password`, {
         email,
       })
       .then((res) => {
-        setIsVisible(false);
+        setIsLoading(false);
 
         toast.success(res.data.message);
-        // navigate("/reset-password");
       })
       .catch((err) => {
-        setIsVisible(false);
-
+        setIsLoading(false);
         toast.error("Email is not registered");
       });
   };
@@ -47,13 +45,13 @@ const ForgetPassword = () => {
             </div>
             <button onClick={handleSubmit}>Send Password Reset Link</button>
             <div className='animation'>
-              {isVisible && (
+              {isLoading && (
                 <RotatingLines
-                  visible={true}
-                  height='96'
-                  width='96'
-                  color='grey'
-                  strokeWidth='5'
+                  Loading={true}
+                  height='90'
+                  width='90'
+                  strokeColor='red'
+                  strokeWidth='3'
                   animationDuration='0.75'
                   ariaLabel='rotating-lines-loading'
                   wrapperStyle={{}}

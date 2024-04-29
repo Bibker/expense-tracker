@@ -20,7 +20,6 @@ function ExpenseForm() {
 
   const handleInput = (name) => (e) => {
     setInputState({ ...inputState, [name]: e.target.value });
-    setError("");
   };
 
   const handleSubmit = (e) => {
@@ -38,7 +37,6 @@ function ExpenseForm() {
 
   return (
     <ExpenseFormStyled onSubmit={handleSubmit}>
-      {error && <p className='error'>{error}</p>}
       <div className='input-control'>
         <input
           type='text'
@@ -70,7 +68,6 @@ function ExpenseForm() {
       </div>
       <div className='selects input-control'>
         <select
-          required
           value={category}
           name='category'
           id='category'

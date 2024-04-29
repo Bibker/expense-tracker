@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
 import { useGlobalContext } from "../../Context/globalContext";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 function Income() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   const { token, incomes, getIncomes, deleteIncome, totalIncome } =
     useGlobalContext();
@@ -15,44 +16,57 @@ function Income() {
   useEffect(() => {
     if (!token) {
       navigate("/login");
+    } else {
+      setIsLoading(false);
+      getIncomes();
     }
-    getIncomes();
   }, [token]);
 
   return (
-    <IncomeStyled>
-      <InnerLayout>
-        <h1>Incomes</h1>
-        <h2 className='total-income'>
-          Total Income: <span>Rs {totalIncome()}</span>
-        </h2>
-        <div className='income-content'>
-          <div className='form-container'>
-            <Form />
-          </div>
-          <div className='incomes'>
-            {incomes.map((income) => {
-              const { _id, title, amount, date, category, description, type } =
-                income;
-              return (
-                <Incomeitem
-                  key={_id}
-                  id={_id}
-                  title={title}
-                  description={description}
-                  amount={amount}
-                  date={date}
-                  type={type}
-                  category={category}
-                  indicatorColor='var(--color-green)'
-                  deleteItem={deleteIncome}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </InnerLayout>
-    </IncomeStyled>
+    <>
+      {!isLoading && (
+        <IncomeStyled>
+          <InnerLayout>
+            <h1>Incomes</h1>
+            <h2 className='total-income'>
+              Total Income: <span>Rs {totalIncome()}</span>
+            </h2>
+            <div className='income-content'>
+              <div className='form-container'>
+                <Form />
+              </div>
+              <div className='incomes'>
+                {incomes.map((income) => {
+                  const {
+                    _id,
+                    title,
+                    amount,
+                    date,
+                    category,
+                    description,
+                    type,
+                  } = income;
+                  return (
+                    <Incomeitem
+                      key={_id}
+                      id={_id}
+                      title={title}
+                      description={description}
+                      amount={amount}
+                      date={date}
+                      type={type}
+                      category={category}
+                      indicatorColor='var(--color-green)'
+                      deleteItem={deleteIncome}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </InnerLayout>
+        </IncomeStyled>
+      )}
+    </>
   );
 }
 

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -16,6 +17,8 @@ export const GlobalProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem("token");
+
+  const username = localStorage.getItem("name");
   const navigate = useNavigate();
   const config = {
     headers: {
@@ -33,6 +36,7 @@ export const GlobalProvider = ({ children }) => {
       .then((res) => {
         toast.success(res.data.message);
         localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("name", res.data.data.name);
         navigate("/dashboard");
       })
       .catch((err) => {
@@ -57,19 +61,15 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
-  //Handel click
-  // const handleClick = () => {
-  //   if (token === "") {
-  //     navigate("/login");
-  //   } else navigate("/dashboard");
-  // };
-
   //Calculate Incomes
   const addIncome = async (income) => {
     const response = await axios
       .post(`${BASE_URL}/income`, income, config)
+      .then((res) => {
+        toast.success("Income added");
+      })
       .catch((err) => {
-        setError(err.response.data.message[0].msg);
+        toast.error(err.response.data.message);
       });
     getIncomes();
   };
@@ -80,8 +80,27 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const deleteIncome = async (id) => {
-    const res = await axios.delete(`${BASE_URL}/income/${id}`, config);
-    getIncomes();
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure that you want to delete this income?",
+      icon: "warning",
+      buttons: ["Cancel", "OK"],
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        axios
+          .delete(`${BASE_URL}/income/${id}`, config)
+          .then(() => {
+            swal("Deleted!", "Income Deleted!", "success");
+            getIncomes();
+          })
+          .catch((error) => {
+            swal("Error", "Failed to delete income", "error");
+          });
+      } else {
+        swal("Error", "Deletion canceled.");
+      }
+    });
   };
 
   const totalIncome = () => {
@@ -97,8 +116,11 @@ export const GlobalProvider = ({ children }) => {
   const addExpense = async (expense) => {
     const response = await axios
       .post(`${BASE_URL}/expense`, expense, config)
+      .then((res) => {
+        toast.success("Expense added");
+      })
       .catch((err) => {
-        setError(err.response.data.message[0].msg);
+        toast.error(err.response.data.message);
       });
     getExpenses();
   };
@@ -109,8 +131,27 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const deleteExpense = async (id) => {
-    const res = await axios.delete(`${BASE_URL}/expense/${id}`, config);
-    getExpenses();
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure that you want to delete this expense?",
+      icon: "warning",
+      buttons: ["Cancel", "OK"],
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        axios
+          .delete(`${BASE_URL}/expense/${id}`, config)
+          .then(() => {
+            swal("Deleted!", "Expense Deleted!", "success");
+            getExpenses();
+          })
+          .catch((error) => {
+            swal("Error", "Failed to delete expense", "error");
+          });
+      } else {
+        swal("Error", "Deletion canceled.");
+      }
+    });
   };
 
   const totalExpenses = () => {
@@ -139,6 +180,7 @@ export const GlobalProvider = ({ children }) => {
   //Logout
   const removeAccount = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name");
     toast.warning("Logged Out !!!");
     navigate("/login");
   };
@@ -154,6 +196,7 @@ export const GlobalProvider = ({ children }) => {
         setPassword,
         handleLogin,
         handleSignup,
+        username,
         token,
         addIncome,
         getIncomes,
