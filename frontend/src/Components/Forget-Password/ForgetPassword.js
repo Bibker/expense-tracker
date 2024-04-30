@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../Context/globalContext";
 import "./forget-password.css";
 import axios from "axios";
@@ -8,10 +8,16 @@ import { useNavigate } from "react-router-dom";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
-  const { BASE_URL } = useGlobalContext();
+  const { BASE_URL, token } = useGlobalContext();
   const [email, setEmail] = useState();
   const [mailSent, setMailSent] = useState(false);
   const [isLoading, setIsLoading] = useState("");
+
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token]);
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -34,15 +40,15 @@ const ForgetPassword = () => {
   return (
     <>
       <div>
-        <div className="forgetpassword">
-          <div className="forgetpassword-container">
+        <div className='forgetpassword'>
+          <div className='forgetpassword-container'>
             {!mailSent ? (
               <>
                 <h1>Enter your email</h1>
-                <div className="forgetpassword-fields">
+                <div className='forgetpassword-fields'>
                   <input
-                    type="email"
-                    placeholder="Email Address"
+                    type='email'
+                    placeholder='Email Address'
                     onChange={(e) => {
                       setEmail(e.target.value);
                     }}
@@ -51,9 +57,9 @@ const ForgetPassword = () => {
                 </div>
               </>
             ) : (
-              <div className="mail-sent">
+              <div className='mail-sent'>
                 <img
-                  src="tick.png"
+                  src='tick.png'
                   style={{ height: "10vh", width: "10vh", alignSelf: "center" }}
                 />
                 <div>{mailSent}</div>
@@ -66,18 +72,18 @@ const ForgetPassword = () => {
                 </button>
               </div>
             )}
-            <div className="animation">
+            <div className='animation'>
               {isLoading && (
                 <RotatingLines
                   Loading={true}
-                  height="90"
-                  width="90"
-                  strokeColor="red"
-                  strokeWidth="3"
-                  animationDuration="0.75"
-                  ariaLabel="rotating-lines-loading"
+                  height='90'
+                  width='90'
+                  strokeColor='red'
+                  strokeWidth='3'
+                  animationDuration='0.75'
+                  ariaLabel='rotating-lines-loading'
                   wrapperStyle={{}}
-                  wrapperClass=""
+                  wrapperClass=''
                 />
               )}
             </div>

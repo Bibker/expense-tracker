@@ -8,32 +8,36 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 function ResetPassword() {
-  const { BASE_URL } = useGlobalContext();
+  const { BASE_URL, token } = useGlobalContext();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const location = useLocation();
   const [isValid, setIsValid] = useState(true);
-  const [token, setToken] = useState("");
+  const [urlToken, setUrlToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    setToken(searchParams.get("t"));
+    if (token) {
+      navigate("/dashboard");
+    } else {
+      const searchParams = new URLSearchParams(location.search);
+      setUrlToken(searchParams.get("t"));
 
-    axios
-      .get(`${BASE_URL}/auth/verify-token`, {
-        headers: { Authorization: token },
-      })
-      .then((res) => {
-        setIsLoading(false);
-        setIsValid(true);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setIsValid(false);
-      });
-  }, [token]);
+      axios
+        .get(`${BASE_URL}/auth/verify-urlToken`, {
+          headers: { Authorization: urlToken },
+        })
+        .then((res) => {
+          setIsLoading(false);
+          setIsValid(true);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          setIsValid(false);
+        });
+    }
+  }, [urlToken]);
 
   const handleSubmit = () => {
     axios
@@ -45,9 +49,9 @@ function ResetPassword() {
         },
         {
           headers: {
-            Authorization: token,
+            Authorization: urlToken,
           },
-        }
+        },
       )
       .then((res) => {
         toast.success("Password Changed Successfully");
@@ -63,20 +67,20 @@ function ResetPassword() {
       {!isLoading && (
         <div>
           {isValid ? (
-            <div className="resetpassword">
-              <div className="resetpassword-container">
+            <div className='resetpassword'>
+              <div className='resetpassword-container'>
                 <h1>Create a new password</h1>
-                <div className="resetpassword-fields">
+                <div className='resetpassword-fields'>
                   <input
-                    type="password"
-                    placeholder="Password"
+                    type='password'
+                    placeholder='Password'
                     onChange={(e) => {
                       setPassword(e.target.value);
                     }}
                   />
                   <input
-                    type="password"
-                    placeholder="Confirm Password"
+                    type='password'
+                    placeholder='Confirm Password'
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
                     }}
@@ -86,14 +90,17 @@ function ResetPassword() {
               </div>
             </div>
           ) : (
-            <div className="valid-link">
-              <div className="resetpassword-container">
+            <div className='valid-link'>
+              <div className='resetpassword-container'>
                 <h1>{invalid} This link is not valid.</h1>
-                <div className="invalid"></div>
+                <div className='invalid'></div>
 
-                <p className="resetpassword-resend">
+                <p className='resetpassword-resend'>
                   Resend Link?{" "}
-                  <Link to={"/forget-password"} className="link">
+                  <Link
+                    to={"/forget-password"}
+                    className='link'
+                  >
                     <span>Click Here</span>
                   </Link>
                 </p>
