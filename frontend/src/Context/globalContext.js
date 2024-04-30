@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://expense-tracker-backend-peach.vercel.app";
 
 const GlobalContext = React.createContext();
 
