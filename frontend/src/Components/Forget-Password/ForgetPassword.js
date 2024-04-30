@@ -4,11 +4,14 @@ import "./forget-password.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { RotatingLines } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
 const ForgetPassword = () => {
+  const navigate = useNavigate();
   const { BASE_URL } = useGlobalContext();
   const [email, setEmail] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [mailSent, setMailSent] = useState(false);
+  const [isLoading, setIsLoading] = useState("");
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -19,8 +22,8 @@ const ForgetPassword = () => {
       })
       .then((res) => {
         setIsLoading(false);
-
-        toast.success(res.data.message);
+        setMailSent(res.data.message);
+        toast.success("Mail Sent Successfully");
       })
       .catch((err) => {
         setIsLoading(false);
@@ -31,31 +34,50 @@ const ForgetPassword = () => {
   return (
     <>
       <div>
-        <div className='forgetpassword'>
-          <div className='forgetpassword-container'>
-            <h1>Reset Password</h1>
-            <div className='forgetpassword-fields'>
-              <input
-                type='email'
-                placeholder='Email Address'
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-            </div>
-            <button onClick={handleSubmit}>Send Password Reset Link</button>
-            <div className='animation'>
+        <div className="forgetpassword">
+          <div className="forgetpassword-container">
+            {!mailSent ? (
+              <>
+                <h1>Enter your email</h1>
+                <div className="forgetpassword-fields">
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                  <button onClick={handleSubmit}>Send Reset Link</button>
+                </div>
+              </>
+            ) : (
+              <div className="mail-sent">
+                <img
+                  src="tick.png"
+                  style={{ height: "10vh", width: "10vh", alignSelf: "center" }}
+                />
+                <div>{mailSent}</div>
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                  }}
+                >
+                  Back to login
+                </button>
+              </div>
+            )}
+            <div className="animation">
               {isLoading && (
                 <RotatingLines
                   Loading={true}
-                  height='90'
-                  width='90'
-                  strokeColor='red'
-                  strokeWidth='3'
-                  animationDuration='0.75'
-                  ariaLabel='rotating-lines-loading'
+                  height="90"
+                  width="90"
+                  strokeColor="red"
+                  strokeWidth="3"
+                  animationDuration="0.75"
+                  ariaLabel="rotating-lines-loading"
                   wrapperStyle={{}}
-                  wrapperClass=''
+                  wrapperClass=""
                 />
               )}
             </div>

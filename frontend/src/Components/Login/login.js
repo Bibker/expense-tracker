@@ -9,41 +9,36 @@ const Login = () => {
   return (
     <>
       <div>
-        <div className='loginsignup'>
-          <div className='loginsignup-container'>
+        <div className="loginsignup">
+          <div className="loginsignup-container">
             <h1>Login</h1>
-            <div className='loginsignup-fields'>
+            <div className="loginsignup-fields">
               <input
-                type='email'
-                placeholder='Email Address'
+                type="email"
+                placeholder="Email Address"
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}
               />
               <input
-                type='password'
-                placeholder='Password'
+                type="password"
+                placeholder="Password"
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
               />
+              <button onClick={handleLogin}>Login</button>
             </div>
-            <button onClick={handleLogin}>Login</button>
-            <p className='loginsignup-login'>
+
+            <p className="loginsignup-login">
               Create an account?{" "}
-              <Link
-                to={"/signup"}
-                className='link'
-              >
-                <span>Signup Here</span>
+              <Link to={"/signup"} className="link">
+                <span>Create account</span>
               </Link>
             </p>
-            <p className='forget-password'>
+            <p className="forget-password">
               Forget Password?{" "}
-              <Link
-                to={"/forget-password"}
-                className='link'
-              >
+              <Link to={"/forget-password"} className="link">
                 <span>Reset Password</span>
               </Link>
             </p>

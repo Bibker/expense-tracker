@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
 import { useGlobalContext } from "../../Context/globalContext";
-import Form from "../Form/Form";
 import Incomeitem from "../IncomeItem/incomeitem";
 import ExpenseForm from "./ExpenseForm";
 import { useNavigate } from "react-router-dom";
@@ -29,14 +28,14 @@ function Expenses() {
         <ExpenseStyled>
           <InnerLayout>
             <h1>Expenses</h1>
-            <h2 className='total-income'>
+            <h2 className="total-income">
               Total Expense: <span>Rs {totalExpenses()}</span>
             </h2>
-            <div className='income-content'>
-              <div className='form-container'>
+            <div className="income-content">
+              <div className="form-container">
                 <ExpenseForm />
               </div>
-              <div className='incomes'>
+              <div className="incomes">
                 {expenses.map((income) => {
                   const {
                     _id,
@@ -57,7 +56,7 @@ function Expenses() {
                       date={date}
                       type={type}
                       category={category}
-                      indicatorColor='var(--color-green)'
+                      indicatorColor="var(--color-green)"
                       deleteItem={deleteExpense}
                     />
                   );

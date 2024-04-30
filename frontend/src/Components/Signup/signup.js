@@ -9,40 +9,38 @@ const Signup = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className='loginsignup'>
-      <div className='loginsignup-container'>
+    <div className="loginsignup">
+      <div className="loginsignup-container">
         <h1>Sign Up</h1>
-        <div className='loginsignup-fields'>
+        <div className="loginsignup-fields">
           <input
-            type='text'
-            placeholder='Your Name'
+            type="text"
+            placeholder="Your Name"
             onChange={(e) => {
               setName(e.target.value);
             }}
           />
 
           <input
-            type='email'
-            placeholder='Email Address'
+            type="email"
+            placeholder="Email Address"
             onChange={(e) => {
               setEmail(e.target.value);
             }}
           />
           <input
-            type='password'
-            placeholder='Password'
+            type="password"
+            placeholder="Password"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
+          <button onClick={handleSignup}>Sign Up</button>
         </div>
-        <button onClick={handleSignup}>Sign Up</button>
-        <p className='loginsignup-login'>
+
+        <p className="loginsignup-login">
           Already have an account?{" "}
-          <Link
-            to={"/login"}
-            className='link'
-          >
+          <Link to={"/login"} className="link">
             <span>Login Here</span>
           </Link>
         </p>

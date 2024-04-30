@@ -7,7 +7,7 @@ import Button from "../Button/Button";
 import { plus } from "../../utils/icons";
 import { toast } from "react-toastify";
 
-function Form() {
+function IncomeForm() {
   const { addIncome, getIncomes, error, setError } = useGlobalContext();
   const [inputState, setInputState] = useState({
     title: "",
@@ -26,7 +26,6 @@ function Form() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addIncome(inputState);
-    getIncomes();
     setInputState({
       title: "",
       amount: "",
@@ -38,70 +37,67 @@ function Form() {
 
   return (
     <FormStyled onSubmit={handleSubmit}>
-      <div className='input-control'>
+      <div className="input-control">
         <input
-          type='text'
+          type="text"
           value={title}
           name={"title"}
-          placeholder='Income Title'
+          placeholder="Income Title"
           onChange={handleInput("title")}
         />
       </div>
-      <div className='input-control'>
+      <div className="input-control">
         <input
-          type='text'
+          type="text"
           value={amount}
           name={"amount"}
-          placeholder='Income Amount'
+          placeholder="Income Amount"
           onChange={handleInput("amount")}
         />
       </div>
-      <div className='input-control'>
+      <div className="input-control">
         <DatePicker
-          id='date'
-          placeholderText='Enter a date'
+          id="date"
+          placeholderText="Enter a date"
           selected={date}
-          dateFormat='dd/MM/yyyy'
+          dateFormat="dd/MM/yyyy"
           onChange={(date) => {
             setInputState({ ...inputState, date: date });
           }}
         />
       </div>
-      <div className='selects input-control'>
+      <div className="selects input-control">
         <select
           value={category}
-          name='category'
-          id='category'
+          name="category"
+          id="category"
           onChange={handleInput("category")}
         >
-          <option
-            value=''
-            disabled
-          >
+          <option value="" disabled>
             Select Option
           </option>
-          <option value='salary'>Salary</option>
-          <option value='freelancing'>Freelancing</option>
-          <option value='investments'>Investiments</option>
-          <option value='stocks'>Stocks</option>
-          <option value='bitcoin'>Bitcoin</option>
-          <option value='bank'>Bank Transfer</option>
-          <option value='youtube'>Youtube</option>
-          <option value='other'>Other</option>
+          <option value="salary">Salary</option>
+          <option value="freelancing">Freelancing</option>
+          <option value="investments">Investiments</option>
+          <option value="stocks">Stocks</option>
+          <option value="bitcoin">Bitcoin</option>
+          <option value="bank">Bank Transfer</option>
+          <option value="youtube">Youtube</option>
+          <option value="other">Other</option>
         </select>
       </div>
-      <div className='input-control'>
+      <div className="input-control">
         <textarea
-          name='description'
+          name="description"
           value={description}
-          placeholder='Add a reference'
-          id='description'
-          cols='30'
-          rows='4'
+          placeholder="Add a reference"
+          id="description"
+          cols="30"
+          rows="4"
           onChange={handleInput("description")}
         ></textarea>
       </div>
-      <div className='submit-btn'>
+      <div className="submit-btn">
         <Button
           name={"Add Income"}
           icon={plus}
@@ -165,4 +161,4 @@ const FormStyled = styled.form`
   }
 `;
 
-export default Form;
+export default IncomeForm;

@@ -30,32 +30,36 @@ function Transaction() {
           <InnerLayout>
             <h2>All Transaction</h2>
             <div>
-              {history.map((item) => {
-                const { _id, title, amount, type } = item;
-                return (
-                  <div
-                    key={_id}
-                    className='history-item'
-                  >
-                    <p
-                      style={{
-                        color:
-                          type === "expense" ? "red" : "var(--color-green)",
-                      }}
-                    >
-                      {title}
-                    </p>
-                    <p
-                      style={{
-                        color:
-                          type === "expense" ? "red" : "var(--color-green)",
-                      }}
-                    >
-                      {type === "expense" ? `-${amount}` : `+${amount}`}
-                    </p>
-                  </div>
-                );
-              })}
+              {history.length > 0 ? (
+                history.map((item) => {
+                  const { _id, title, amount, type } = item;
+                  return (
+                    <div key={_id} className="history-item">
+                      <p
+                        style={{
+                          color:
+                            type === "expense" ? "red" : "var(--color-green)",
+                        }}
+                      >
+                        {title}
+                      </p>
+                      <p
+                        style={{
+                          color:
+                            type === "expense" ? "red" : "var(--color-green)",
+                        }}
+                      >
+                        {type === "expense" ? `-${amount}` : `+${amount}`}
+                      </p>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="no-transaction">
+                  <h2>No Transactions Yet</h2>
+                  <h2>Please add income / expense first.</h2>
+                </div>
+              )}
             </div>
           </InnerLayout>
         </HistoryStyled>
@@ -77,6 +81,16 @@ const HistoryStyled = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-top: 1rem;
+  }
+  .no-transaction {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25%;
+    justify-content: center;
+    align-items: center;
+  }
+  .no-transaction h2 {
+    color: #aaa;
   }
 `;
 

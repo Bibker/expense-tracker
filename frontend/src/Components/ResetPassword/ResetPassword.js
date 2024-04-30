@@ -14,6 +14,7 @@ function ResetPassword() {
   const location = useLocation();
   const [isValid, setIsValid] = useState(true);
   const [token, setToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,9 +26,11 @@ function ResetPassword() {
         headers: { Authorization: token },
       })
       .then((res) => {
+        setIsLoading(false);
         setIsValid(true);
       })
       .catch((error) => {
+        setIsLoading(false);
         setIsValid(false);
       });
   }, [token]);
@@ -44,62 +47,61 @@ function ResetPassword() {
           headers: {
             Authorization: token,
           },
-        },
+        }
       )
       .then((res) => {
         toast.success("Password Changed Successfully");
         navigate("/login");
       })
       .catch((err) => {
-        toast.error("Error");
+        toast.error(err.response.data.message);
       });
   };
 
   return (
     <>
-      <div>
-        {isValid ? (
-          <div className='resetpassword'>
-            <div className='resetpassword-container'>
-              <h1>Create a new password</h1>
-              <div className='resetpassword-fields'>
-                <input
-                  type='password'
-                  placeholder='Password'
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                />
-                <input
-                  type='password'
-                  placeholder='Confirm Password'
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                  }}
-                />
+      {!isLoading && (
+        <div>
+          {isValid ? (
+            <div className="resetpassword">
+              <div className="resetpassword-container">
+                <h1>Create a new password</h1>
+                <div className="resetpassword-fields">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                    }}
+                  />
+                  <button onClick={handleSubmit}>Change Password</button>
+                </div>
               </div>
-              <button onClick={handleSubmit}>Save</button>
             </div>
-          </div>
-        ) : (
-          <div className='valid-link'>
-            <div className='resetpassword-container'>
-              <h1>{invalid} This link is not valid.</h1>
-              <div className='invalid'></div>
+          ) : (
+            <div className="valid-link">
+              <div className="resetpassword-container">
+                <h1>{invalid} This link is not valid.</h1>
+                <div className="invalid"></div>
 
-              <p className='resetpassword-resend'>
-                Resend Link?{" "}
-                <Link
-                  to={"/signup"}
-                  className='link'
-                >
-                  <span>Click Here</span>
-                </Link>
-              </p>
+                <p className="resetpassword-resend">
+                  Resend Link?{" "}
+                  <Link to={"/forget-password"} className="link">
+                    <span>Click Here</span>
+                  </Link>
+                </p>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </>
   );
 }

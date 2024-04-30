@@ -34,7 +34,6 @@ export const GlobalProvider = ({ children }) => {
         password,
       })
       .then((res) => {
-        toast.success(res.data.message);
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("name", res.data.data.name);
         navigate("/dashboard");
@@ -81,7 +80,7 @@ export const GlobalProvider = ({ children }) => {
 
   const deleteIncome = async (id) => {
     swal({
-      title: "Are you sure?",
+      title: "Delete Income?",
       text: "Are you sure that you want to delete this income?",
       icon: "warning",
       buttons: ["Cancel", "OK"],
@@ -91,14 +90,12 @@ export const GlobalProvider = ({ children }) => {
         axios
           .delete(`${BASE_URL}/income/${id}`, config)
           .then(() => {
-            swal("Deleted!", "Income Deleted!", "success");
+            toast.success("Income Deleted");
             getIncomes();
           })
           .catch((error) => {
-            swal("Error", "Failed to delete income", "error");
+            toast.error("Failed to delete income");
           });
-      } else {
-        swal("Error", "Deletion canceled.");
       }
     });
   };
@@ -132,7 +129,7 @@ export const GlobalProvider = ({ children }) => {
 
   const deleteExpense = async (id) => {
     swal({
-      title: "Are you sure?",
+      title: "Delete Expense?",
       text: "Are you sure that you want to delete this expense?",
       icon: "warning",
       buttons: ["Cancel", "OK"],
@@ -142,14 +139,12 @@ export const GlobalProvider = ({ children }) => {
         axios
           .delete(`${BASE_URL}/expense/${id}`, config)
           .then(() => {
-            swal("Deleted!", "Expense Deleted!", "success");
+            toast.success("Expense deleted");
             getExpenses();
           })
           .catch((error) => {
-            swal("Error", "Failed to delete expense", "error");
+            toast.error("Expense delete failed");
           });
-      } else {
-        swal("Error", "Deletion canceled.");
       }
     });
   };
@@ -179,10 +174,19 @@ export const GlobalProvider = ({ children }) => {
 
   //Logout
   const removeAccount = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    toast.warning("Logged Out !!!");
-    navigate("/login");
+    swal({
+      title: "Logout?",
+      text: "Are you sure that you want to logout?",
+      icon: "warning",
+      buttons: ["Cancel", "OK"],
+      dangerMode: true,
+    }).then((logout) => {
+      if (logout) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("name");
+        navigate("/login");
+      }
+    });
   };
 
   return (

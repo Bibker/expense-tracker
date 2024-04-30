@@ -25,7 +25,6 @@ function ExpenseForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addExpense(inputState);
-    getExpenses();
     setInputState({
       title: "",
       amount: "",
@@ -37,70 +36,67 @@ function ExpenseForm() {
 
   return (
     <ExpenseFormStyled onSubmit={handleSubmit}>
-      <div className='input-control'>
+      <div className="input-control">
         <input
-          type='text'
+          type="text"
           value={title}
           name={"title"}
-          placeholder='Expense Title'
+          placeholder="Expense Title"
           onChange={handleInput("title")}
         />
       </div>
-      <div className='input-control'>
+      <div className="input-control">
         <input
-          type='text'
+          type="text"
           value={amount}
           name={"amount"}
-          placeholder='Expense Amount'
+          placeholder="Expense Amount"
           onChange={handleInput("amount")}
         />
       </div>
-      <div className='input-control'>
+      <div className="input-control">
         <DatePicker
-          id='date'
-          placeholderText='Enter a date'
+          id="date"
+          placeholderText="Enter a date"
           selected={date}
-          dateFormat='dd/MM/yyyy'
+          dateFormat="dd/MM/yyyy"
           onChange={(date) => {
             setInputState({ ...inputState, date: date });
           }}
         />
       </div>
-      <div className='selects input-control'>
+      <div className="selects input-control">
         <select
           value={category}
-          name='category'
-          id='category'
+          name="category"
+          id="category"
           onChange={handleInput("category")}
         >
-          <option
-            value=''
-            disabled
-          >
+          <option value="" disabled>
             Select Option
           </option>
-          <option value='education'>Education</option>
-          <option value='groceries'>Groceries</option>
-          <option value='health'>Health</option>
-          <option value='subscriptions'>Subscriptions</option>
-          <option value='takeaways'>Takeaways</option>
-          <option value='clothing'>Clothing</option>
-          <option value='travelling'>Travelling</option>
-          <option value='other'>Other</option>
+          <option value="education">Education</option>
+          <option value="groceries">Groceries</option>
+          <option value="health">Health</option>
+          <option value="subscriptions">Subscriptions</option>
+          <option value="takeaways">Takeaways</option>
+          <option value="clothing">Clothing</option>
+          <option value="travelling">Travelling</option>
+          <option value="other">Other</option>
         </select>
       </div>
-      <div className='input-control'>
+      <div className="input-control">
         <textarea
-          name='description'
+          name="description"
           value={description}
-          placeholder='Add a reference'
-          id='description'
-          cols='30'
-          rows='4'
+          placeholder="Add a reference"
+          id="description"
+          cols="30"
+          rows="4"
           onChange={handleInput("description")}
         ></textarea>
       </div>
-      <div className='submit-btn'>
+      <div className="submit-btn">
         <Button
           name={"Add Expense"}
           icon={plus}
