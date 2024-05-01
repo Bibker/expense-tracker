@@ -25,7 +25,7 @@ function ResetPassword() {
       setUrlToken(searchParams.get("t"));
 
       axios
-        .get(`${BASE_URL}/auth/verify-urlToken`, {
+        .get(`${BASE_URL}/auth/verify-token`, {
           headers: { Authorization: urlToken },
         })
         .then((res) => {
@@ -51,7 +51,7 @@ function ResetPassword() {
           headers: {
             Authorization: urlToken,
           },
-        },
+        }
       )
       .then((res) => {
         toast.success("Password Changed Successfully");
@@ -67,20 +67,20 @@ function ResetPassword() {
       {!isLoading && (
         <div>
           {isValid ? (
-            <div className='resetpassword'>
-              <div className='resetpassword-container'>
+            <div className="resetpassword">
+              <div className="resetpassword-container">
                 <h1>Create a new password</h1>
-                <div className='resetpassword-fields'>
+                <div className="resetpassword-fields">
                   <input
-                    type='password'
-                    placeholder='Password'
+                    type="password"
+                    placeholder="Password"
                     onChange={(e) => {
                       setPassword(e.target.value);
                     }}
                   />
                   <input
-                    type='password'
-                    placeholder='Confirm Password'
+                    type="password"
+                    placeholder="Confirm Password"
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
                     }}
@@ -90,17 +90,14 @@ function ResetPassword() {
               </div>
             </div>
           ) : (
-            <div className='valid-link'>
-              <div className='resetpassword-container'>
+            <div className="valid-link">
+              <div className="resetpassword-container">
                 <h1>{invalid} This link is not valid.</h1>
-                <div className='invalid'></div>
+                <div className="invalid"></div>
 
-                <p className='resetpassword-resend'>
+                <p className="resetpassword-resend">
                   Resend Link?{" "}
-                  <Link
-                    to={"/forget-password"}
-                    className='link'
-                  >
+                  <Link to={"/forget-password"} className="link">
                     <span>Click Here</span>
                   </Link>
                 </p>
